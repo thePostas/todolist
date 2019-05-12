@@ -2,17 +2,25 @@ import React, {Component} from 'react';
 import TaskGenerator from '../components/TaskGenerator';
 import Task from '../components/Task';
 
-
 export default class ToDoList extends Component {
+    constructor() {
+        super(...arguments);
+        this.state = {
+
+        };
+        this.updateTasks = this.updateTasks.bind(this);
+    }
+
+    updateTasks(value) {
+        this.setState({ tasks: value })
+    }
+
     render() {
-        let taskList = this.props.tasks.map((task)=> {
-            return <Task title={task.title}/>
-        });
         return (
             <div className={'todolist'}>
-                <TaskGenerator/>
+                <TaskGenerator updateTasks={this.updateTasks}/>
                 <div className={'todolist__tasks'}>
-                    {taskList}
+                    {this.state.tasks}
                 </div>
             </div>
         )
