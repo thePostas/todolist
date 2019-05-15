@@ -3,10 +3,10 @@ import TaskGenerator from '../components/TaskGenerator';
 import Task from '../components/Task';
 
 export default class ToDoList extends Component {
-    constructor() {
+    constructor(props) {
         super(...arguments);
         this.state = {
-
+            tasks: []
         };
         this.updateTasks = this.updateTasks.bind(this);
     }

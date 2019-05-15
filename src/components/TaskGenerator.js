@@ -2,65 +2,52 @@ import React, {Component} from 'react';
 import Task from "../components/Task";
 
 export default class TaskGenerator extends Component {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         this.state = {
+            inputValue: '',
             tasks: [],
-            doneTasks: 0,
             percent: 0
         };
+        this.handleInput = this.handleInput.bind(this);
+        this.createButton = this.createButton.bind(this);
+        this.taskRemove = this.taskRemove.bind(this);
 
-        this.createButtonEvent = this.createButtonEvent.bind(this);
-        this.deleteTaskEvent = this.deleteTaskEvent.bind(this);
-        this.taskIsDone = this.taskIsDone.bind(this);
-        this.calculate = this.calculate.bind(this);
+        // this.updateTasks = this.updateTasks.bind(this);
     }
 
-    componentDidMount() {
-        this.INPUT = document.getElementsByClassName('todolist__task-generator-input')[0];
-        this.percent = document.getElementsByClassName('todolist__progress-bar-percent')[0];
+    componentShouldUpdate() {
+        console.log(this.state.tasks)
     }
 
-    calculate() {
-        return  Math.floor(this.state.doneTasks / this.state.tasks.length * 100);
+    handleInput(event) {
+        this.setState({inputValue: event.target.value});
     }
 
-    createButtonEvent() {
-        if (this.INPUT.value) {
-            this.state.tasks.push(<Task title={this.INPUT.value} deleteTaskEvent={this.deleteTaskEvent} taskIsDone={this.taskIsDone} index={this.state.tasks.length}/>);
-            this.INPUT.value = '';
-            }
-        this.props.updateTasks(this.state.tasks);
-        this.state.percent = this.state.doneTasks === 0 ? 0 : this.calculate();
-    }
-
-    deleteTaskEvent(taskForDelete) {
-        this.state.tasks.map((search, index) => {
-            if (taskForDelete === search.props) {
-              this.state.tasks.splice(index,1);
-                this.props.updateTasks(this.state.tasks);
-            }
-        })
-    }
-
-    taskIsDone(answer, target) {
-        this.state.percent = this.state.doneTasks === 0 ? 0 : this.calculate();
-        if (answer) {
-            this.state.doneTasks++;
-            this.state.tasks.map((search, index) => {
-                if(search === target) {
-                    search.state.done = true;
-                }
-            })
-
-        } else {
-            this.state.doneTasks--;
-            this.state.tasks.map((search, index) => {
-                if(search === target) {
-                    search.state.done = false;
-                }
-            })
+    createButton(e) {
+        e.preventDefault();
+        let updatedTasks = this.state.tasks;
+        if (this.state.inputValue) {
+            updatedTasks.push(<Task key={this.state.inputValue + Math.floor(Math.random() * (0 - 100 + 1)) + 0} title={this.state.inputValue} taskRemove={this.taskRemove}/>);
+            this.setState({
+               tasks: updatedTasks
+            });
+            this.props.updateTasks(this.state.tasks);
         }
+        console.log(this.state.tasks);
+    }
+
+
+    taskRemove(targetTask) {
+        let updatedTasks = this.state.tasks;
+        updatedTasks.map((currentTask, index) => {
+            if (targetTask === currentTask.props) {
+                updatedTasks.splice(index, 1);
+            }
+        });
+        this.setState({
+            tasks: updatedTasks
+        })
     }
 
     render() {
@@ -72,8 +59,12 @@ export default class TaskGenerator extends Component {
                         <div className={'todolist__progress-bar-done'}/>
                     </div>
                     <div className={'todolist__task-generator-input-wrapper'}>
-                        <input className={'todolist__task-generator-input'} type={'text'}/>
-                        <button onClick={(evt)=> {evt.preventDefault();this.createButtonEvent()}} className={'todolist__task-generator-button'}>Add</button>
+                        <input
+                            className={'todolist__task-generator-input'} type={'text'}
+                            inputValue={this.state.value}
+                            onChange={this.handleInput}
+                        />
+                        <button onClick={this.createButton} className={'todolist__task-generator-button'}>Add</button>
                     </div>
                 </form>
         )
