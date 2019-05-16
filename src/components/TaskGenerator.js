@@ -36,7 +36,8 @@ export default class TaskGenerator extends Component {
             this.inputField.current.value = '';
             this.setState({
                 index: this.state.index + 1,
-                tasks: updatedTasks
+                tasks: updatedTasks,
+                inputValue: ''
             });
             this.calculatePercent();
             this.props.updateTasks(this.state.tasks);
@@ -45,22 +46,22 @@ export default class TaskGenerator extends Component {
 
     taskRemove(targetTask) {
         let updatedTasks = this.state.tasks;
-        updatedTasks.map((currentTask, index) => {
-            if (targetTask === currentTask.props.index) {
-                updatedTasks.splice(index, 1);
+            updatedTasks.filter((currentTask, index) => {
+                if (targetTask === currentTask.props.index) {
+                    updatedTasks.splice(index, 1);
 
-            }
-        });
-        this.setState({
-            tasks: updatedTasks
-        });
-        this.calculatePercent();
-        this.props.updateTasks(this.state.tasks);
+                }
+            });
+            this.setState({
+                tasks: updatedTasks
+            });
+            this.calculatePercent();
+            this.props.updateTasks(this.state.tasks);
     }
 
     updateStatus(index, status) {
         let updatedTasks = this.state.tasks;
-        updatedTasks.map((currentTask) => {
+        updatedTasks.filter((currentTask) => {
             if (currentTask.props.index === index) {
                 currentTask.props.done = status;
                 this.calculatePercent();
