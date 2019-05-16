@@ -10,8 +10,9 @@ export default class TaskGenerator extends Component {
             percent: 0,
             index: 0
         };
+        this.inputField = React.createRef();
         this.handleInput = this.handleInput.bind(this);
-        this.createButton = this.createButton.bind(this);
+        this.createNewTask = this.createNewTask.bind(this);
         this.taskRemove = this.taskRemove.bind(this);
         this.updateStatus = this.updateStatus.bind(this);
         this.calculatePercent = this.calculatePercent.bind(this);
@@ -21,7 +22,7 @@ export default class TaskGenerator extends Component {
         this.setState({inputValue: event.target.value});
     }
 
-    createButton(e) {
+    createNewTask(e) {
         e.preventDefault();
         let updatedTasks = this.state.tasks;
         if (this.state.inputValue) {
@@ -32,6 +33,7 @@ export default class TaskGenerator extends Component {
                 taskRemove={this.taskRemove}
                 updateStatus={this.updateStatus}
             />);
+            this.inputField.current.value = '';
             this.setState({
                 index: this.state.index + 1,
                 tasks: updatedTasks
@@ -100,12 +102,13 @@ export default class TaskGenerator extends Component {
                     </div>
                     <div className={'todolist__task-generator-input-wrapper'}>
                         <input
+                            ref={this.inputField}
                             className={'todolist__task-generator-input'} type={'text'}
-                            inputValue={this.state.value}
+                            value={this.state.value}
                             onChange={this.handleInput}
                         />
                         <button
-                            onClick={this.createButton}
+                            onClick={this.createNewTask}
                             className={'todolist__task-generator-button'}>
                             Add
                         </button>
