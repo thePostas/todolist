@@ -7,17 +7,14 @@ export default class TaskGenerator extends Component {
         this.state = {
             inputValue: '',
             tasks: [],
-            percent: 0
+            percent: 0,
+            index: 0
         };
         this.handleInput = this.handleInput.bind(this);
         this.createButton = this.createButton.bind(this);
         this.taskRemove = this.taskRemove.bind(this);
-
-        // this.updateTasks = this.updateTasks.bind(this);
-    }
-
-    componentShouldUpdate() {
-        console.log(this.state.tasks)
+        this.updateStatus = this.updateStatus.bind(this);
+        this.calculatePercent = this.calculatePercent.bind(this);
     }
 
     handleInput(event) {
@@ -28,35 +25,78 @@ export default class TaskGenerator extends Component {
         e.preventDefault();
         let updatedTasks = this.state.tasks;
         if (this.state.inputValue) {
-            updatedTasks.push(<Task key={this.state.inputValue + Math.floor(Math.random() * (0 - 100 + 1)) + 0} title={this.state.inputValue} taskRemove={this.taskRemove}/>);
+            updatedTasks.push(<Task
+                key={this.state.index}
+                index={this.state.index}
+                title={this.state.inputValue}
+                taskRemove={this.taskRemove}
+                updateStatus={this.updateStatus}
+            />);
             this.setState({
-               tasks: updatedTasks
+                index: this.state.index + 1,
+                tasks: updatedTasks
             });
+            this.calculatePercent();
             this.props.updateTasks(this.state.tasks);
         }
-        console.log(this.state.tasks);
     }
-
 
     taskRemove(targetTask) {
         let updatedTasks = this.state.tasks;
         updatedTasks.map((currentTask, index) => {
-            if (targetTask === currentTask.props) {
+            if (targetTask === currentTask.props.index) {
                 updatedTasks.splice(index, 1);
+
             }
         });
         this.setState({
             tasks: updatedTasks
-        })
+        });
+        this.calculatePercent();
+        this.props.updateTasks(this.state.tasks);
+    }
+
+    updateStatus(index, status) {
+        let updatedTasks = this.state.tasks;
+        updatedTasks.map((currentTask) => {
+            if (currentTask.props.index === index) {
+                currentTask.props.done = status;
+                this.calculatePercent();
+            }
+        });
+        this.setState({
+            tasks: updatedTasks
+        });
+    }
+
+    calculatePercent() {
+        let doneTasks = 0;
+        let updatedTasks = this.state.tasks;
+        updatedTasks.map((currentTask) => {
+          if(currentTask.props.done) {
+              doneTasks++
+          }
+        });
+        this.setState({percent: doneTasks === 0 ? 0 : Math.floor(doneTasks / this.state.tasks.length * 100)})
     }
 
     render() {
         return (
                 <form className={'todolist__task-generator'}>
-                    <legend className={'todolist__task-generator-legend'}>to do list</legend>
-                    <div className={'todolist__progress-bar'}>
-                        <p className={'todolist__progress-bar-percent'}>{this.state.percent}%</p>
-                        <div className={'todolist__progress-bar-done'}/>
+                    <legend
+                        className={'todolist__task-generator-legend'}>
+                        to do list
+                    </legend>
+                    <div
+                        className={'todolist__progress-bar'}>
+                        <p
+                            className={'todolist__progress-bar-percent'}>
+                            {this.state.percent}%
+                        </p>
+                        <div
+                            className={'todolist__progress-bar-done'}
+                            style={{width: this.state.percent + '%'}}
+                        />
                     </div>
                     <div className={'todolist__task-generator-input-wrapper'}>
                         <input
@@ -64,7 +104,11 @@ export default class TaskGenerator extends Component {
                             inputValue={this.state.value}
                             onChange={this.handleInput}
                         />
-                        <button onClick={this.createButton} className={'todolist__task-generator-button'}>Add</button>
+                        <button
+                            onClick={this.createButton}
+                            className={'todolist__task-generator-button'}>
+                            Add
+                        </button>
                     </div>
                 </form>
         )

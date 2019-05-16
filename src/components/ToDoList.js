@@ -4,9 +4,10 @@ import Task from '../components/Task';
 
 export default class ToDoList extends Component {
     constructor(props) {
-        super(...arguments);
+        super(props);
         this.state = {
-            tasks: []
+            tasks: [],
+            ...props
         };
         this.updateTasks = this.updateTasks.bind(this);
     }
@@ -17,9 +18,15 @@ export default class ToDoList extends Component {
 
     render() {
         return (
-            <div className={'todolist'}>
-                <TaskGenerator updateTasks={this.updateTasks}/>
-                <div className={'todolist__tasks'}>
+            <div
+                className={'todolist'}
+            >
+                <TaskGenerator
+                    updateTasks={this.updateTasks}
+                />
+                <div
+                    className={'todolist__tasks'}
+                >
                     {this.state.tasks}
                 </div>
             </div>
