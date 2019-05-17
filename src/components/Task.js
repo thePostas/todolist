@@ -4,35 +4,36 @@ export default class Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            done: true,
             ...props
         };
+        this.checkBox = React.createRef();
         this.handleCloseTask = this.handleCloseTask.bind(this);
         this.isDone = this.isDone.bind(this);
     }
 
-    handleCloseTask() {
+    componentDidMount = () => {
+        this.setState({done: !!this.checkBox.current.checked},() => {
+            this.props.updateStatus();
+        });
+    };
+
+    handleCloseTask = () => {
         this.props.taskRemove(this.props.index);
-    }
-    
-    isDone(e) {
-        if (e.target.checked) {
-            this.setState({
-                done: false
-            });
-            this.state.updateStatus(this.props.index, this.state.done)
-        } else {
-            this.setState({
-                done: true
-            });
-            this.state.updateStatus(this.props.index, this.state.done)
-        }
-    }
+    };
+
+    isDone = () => {
+        this.setState({done: !!this.checkBox.current.checked},() => {
+            this.props.done = this.state.done;
+            this.props.updateStatus();
+        });
+        console.log(this.state.done);
+     };
+
 
     render() {
         return (
             <div
-                className={this.state.done ? 'todolist__task-task': 'todolist__task-task todolist__task-task-done'}
+                className={this.state.done ? 'todolist__task-task todolist__task-task-done' : 'todolist__task-task'}
             >
                 <p>
                     {this.props.title}
@@ -43,6 +44,7 @@ export default class Task extends Component {
                     +
                 </span>
                 <input
+                    ref={this.checkBox}
                     onClick={this.isDone}
                     type={'checkbox'}
                     className={'todolist__task-task-checkbox'}/>

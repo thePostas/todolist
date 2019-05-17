@@ -12,9 +12,9 @@ export default class ToDoList extends Component {
         this.updateTasks = this.updateTasks.bind(this);
     }
 
-    updateTasks(value) {
+    updateTasks = (value) => {
         this.setState({ tasks: value })
-    }
+    };
 
     render() {
         return (

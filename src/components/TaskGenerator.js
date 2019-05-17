@@ -18,11 +18,11 @@ export default class TaskGenerator extends Component {
         this.calculatePercent = this.calculatePercent.bind(this);
     }
 
-    handleInput(event) {
+    handleInput = (event) => {
         this.setState({inputValue: event.target.value});
-    }
+    };
 
-    createNewTask(e) {
+    createNewTask = (e) => {
         e.preventDefault();
         let updatedTasks = this.state.tasks;
         if (this.state.inputValue) {
@@ -42,14 +42,13 @@ export default class TaskGenerator extends Component {
             this.calculatePercent();
             this.props.updateTasks(this.state.tasks);
         }
-    }
+    };
 
-    taskRemove(targetTask) {
+    taskRemove = (targetTask) => {
         let updatedTasks = this.state.tasks;
             updatedTasks.filter((currentTask, index) => {
                 if (targetTask === currentTask.props.index) {
                     updatedTasks.splice(index, 1);
-
                 }
             });
             this.setState({
@@ -57,22 +56,13 @@ export default class TaskGenerator extends Component {
             });
             this.calculatePercent();
             this.props.updateTasks(this.state.tasks);
-    }
+    };
 
-    updateStatus(index, status) {
-        let updatedTasks = this.state.tasks;
-        updatedTasks.filter((currentTask) => {
-            if (currentTask.props.index === index) {
-                currentTask.props.done = status;
-                this.calculatePercent();
-            }
-        });
-        this.setState({
-            tasks: updatedTasks
-        });
-    }
+    updateStatus = () => {
+        this.calculatePercent();
+    };
 
-    calculatePercent() {
+    calculatePercent = () => {
         let doneTasks = 0;
         let updatedTasks = this.state.tasks;
         updatedTasks.map((currentTask) => {
@@ -81,7 +71,7 @@ export default class TaskGenerator extends Component {
           }
         });
         this.setState({percent: doneTasks === 0 ? 0 : Math.floor(doneTasks / this.state.tasks.length * 100)})
-    }
+    };
 
     render() {
         return (
