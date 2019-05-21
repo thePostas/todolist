@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import TaskGenerator from '../components/TaskGenerator';
-import Task from '../components/Task';
+import TaskList from '../components/TaskList'
 
 export default class ToDoList extends Component {
     constructor(props) {
@@ -24,11 +24,7 @@ export default class ToDoList extends Component {
                 <TaskGenerator
                     updateTasks={this.updateTasks}
                 />
-                <div
-                    className={'todolist__tasks'}
-                >
-                    {this.state.tasks}
-                </div>
+                <TaskList tasks={this.state.tasks}/>
             </div>
         )
     }
